@@ -48,4 +48,8 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="2" author="rafael">
+        <addForeignKeyConstraint baseTableName="address" baseColumnNames="client_id" constraintName="fk_client_id" referencedTableName="client"
+                                 referencedColumnNames="id"/>
+    </changeSet>
 </databaseChangeLog>
