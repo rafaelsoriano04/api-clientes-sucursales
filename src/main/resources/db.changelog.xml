@@ -1,0 +1,52 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="1" author="rafael">
+        <createTable tableName="client">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_client_id" nullable="false"/>
+            </column>
+            <column name="id_type" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_number" type="varchar(100)">
+                <constraints primaryKey="true" primaryKeyName="pk_idNumber_id" nullable="false"/>
+            </column>
+            <column name="names" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_matrix" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="address">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_address_id" nullable="false"/>
+            </column>
+            <column name="province" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street_name" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street_number" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="BIGSERIAL">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
