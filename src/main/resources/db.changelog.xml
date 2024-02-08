@@ -52,4 +52,12 @@
         <addForeignKeyConstraint baseTableName="address" baseColumnNames="client_id" constraintName="fk_client_id" referencedTableName="client"
                                  referencedColumnNames="id"/>
     </changeSet>
+    <changeSet id="3" author="rafael">
+        <dropColumn tableName="client" columnName="id_matrix"/>
+        <addColumn tableName="address">
+            <column name="is_matrix" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
