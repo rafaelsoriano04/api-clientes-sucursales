@@ -24,6 +24,6 @@ public class ClientModel {
     private String email;
     private Integer phoneNumber;
     private Integer idMatrix;
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "clientModel")
     private List<AddressModel> addressModelList;
 }

@@ -14,4 +14,6 @@ public interface ClientRepository extends JpaRepository<ClientModel, Long> {
             "FROM ClientModel c " +
             "WHERE c.idNumber = COALESCE(:idNumber, c.idNumber) AND c.names = COALESCE(:names, c.names)")
     List<ClientModel> getByParamerters(String idNumber, String names);
+
+    Boolean existsByIdNumber (String idNumber);
 }
