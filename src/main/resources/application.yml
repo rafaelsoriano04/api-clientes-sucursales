@@ -1,1 +1,28 @@
+# Config data base
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/practice_springboot
+    username: "postgres"
+    password: "root"
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: true
+    change-log: classpath:db.changelog.xml
+    contexts: ${spring.profiles.active}
 
+  # Config JPA
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      org.hibernate.envers.audit_table_suffix: "_history"
+      org.hibernate.envers.revision_field_name: "revision"
+      org.hibernate.envers.revision_type_field_name: "revision_type"
+      hibernate:
+        order_by:
+          default_null_ordering: last
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
