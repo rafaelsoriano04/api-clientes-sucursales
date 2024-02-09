@@ -17,4 +17,7 @@ public class ClientPresenter {
     private String names;
     private String email;
     private Integer phoneNumber;
+    private String mainAddress;
+    private String mainProvince;
+    private String mainCity;
 }

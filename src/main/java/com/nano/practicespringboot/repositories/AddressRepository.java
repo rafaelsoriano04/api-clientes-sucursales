@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AddressRepository extends JpaRepository<AddressModel, Long> {
+    Boolean existsByType(String type);
 }

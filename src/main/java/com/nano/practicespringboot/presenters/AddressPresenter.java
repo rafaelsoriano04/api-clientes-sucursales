@@ -10,4 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AddressPresenter {
+    private Long id;
+    private String province;
+    private String city;
+    private String streetName;
+    private String streetNumber;
+    private Long clientId;
+    private String type;
 }

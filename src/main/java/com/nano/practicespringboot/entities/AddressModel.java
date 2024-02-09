@@ -20,6 +20,7 @@ public class AddressModel {
     private String city;
     private String streetName;
     private String streetNumber;
+    private String type;
 
     @ManyToOne
     @JoinColumn(name = "client_id")

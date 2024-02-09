@@ -23,7 +23,6 @@ public class ClientModel {
     private String names;
     private String email;
     private Integer phoneNumber;
-    private Integer idMatrix;
     @OneToMany(mappedBy = "clientModel")
     private List<AddressModel> addressModelList;
 }

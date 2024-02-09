@@ -60,4 +60,10 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="4" author="rafael">
+        <modifyDataType tableName="address" columnName="is_matrix" newDataType="BOOLEAN"/>
+    </changeSet>
+    <changeSet id="5" author="rafael">
+        <modifyDataType tableName="address" columnName="is_matrix" newDataType="varchar(100)"/>
+    </changeSet>
 </databaseChangeLog>
