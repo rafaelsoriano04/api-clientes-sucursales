@@ -1,19 +1,17 @@
 package com.nano.practicespringboot.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "client")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class ClientModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +21,6 @@ public class ClientModel {
     private String names;
     private String email;
     private Integer phoneNumber;
-    @OneToMany(mappedBy = "clientModel")
+    @OneToMany(mappedBy = "clientModel", cascade = CascadeType.ALL)
     private List<AddressModel> addressModelList;
 }

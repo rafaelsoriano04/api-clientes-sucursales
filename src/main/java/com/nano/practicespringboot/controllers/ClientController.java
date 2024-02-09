@@ -15,6 +15,11 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
+    @GetMapping("/list")
+    public List<ClientPresenter> getAll(){
+        return clientService.getAll();
+    }
+
     @GetMapping("/list/parameter")
     public List<ClientPresenter> getByParameters(@RequestParam(required = false) String idNumber, @RequestParam(required = false) String names) {
         return clientService.getByParameters(idNumber, names);
@@ -26,8 +31,8 @@ public class ClientController {
     }
 
     @PostMapping
-    public ClientPresenter saveClient(@RequestBody ClientModel clientModel) {
-        return clientService.saveClient(clientModel);
+    public ClientPresenter saveClient(@RequestBody ClientPresenter clientPresenter) {
+        return clientService.saveClient(clientPresenter);
     }
 }
 

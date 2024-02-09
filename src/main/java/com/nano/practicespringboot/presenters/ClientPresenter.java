@@ -1,10 +1,11 @@
 package com.nano.practicespringboot.presenters;
 
-import com.nano.practicespringboot.entities.AddressModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +18,5 @@ public class ClientPresenter {
     private String names;
     private String email;
     private Integer phoneNumber;
-    private String mainAddress;
-    private String mainProvince;
-    private String mainCity;
+    private AddressPresenter matrix;
 }

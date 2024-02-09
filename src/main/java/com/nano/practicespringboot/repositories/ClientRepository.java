@@ -1,7 +1,6 @@
 package com.nano.practicespringboot.repositories;
 
 import com.nano.practicespringboot.entities.AddressModel;
-import com.nano.practicespringboot.presenters.ClientPresenter;
 import com.nano.practicespringboot.entities.ClientModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,8 +17,16 @@ public interface ClientRepository extends JpaRepository<ClientModel, Long> {
 
     Boolean existsByIdNumber (String idNumber);
 
-    @Query("SELECT a FROM AddressModel a WHERE a.clientModel.id = :id")
+    @Query("SELECT a " +
+            "FROM AddressModel a " +
+            "WHERE a.clientModel.id = :id")
     List<AddressModel> getAddressesByClient(Long id);
+
+    @Query("SELECT a " +
+            "FROM AddressModel a " +
+            "WHERE a.clientModel.id > :id " +
+            "AND a.type = '0'")
+    AddressModel getMatrixByClient(Long id);
 
 
 }

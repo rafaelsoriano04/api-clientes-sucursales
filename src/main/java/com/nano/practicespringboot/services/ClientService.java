@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface ClientService {
     List<ClientPresenter> getByParameters(String idNumber, String names);
-
-    ClientPresenter saveClient(ClientModel clientModel);
+    ClientPresenter saveClient(ClientPresenter clientPresenter);
 
     List<AddressPresenter> getAddressesByClient(Long id);
 
     ClientModel getClient(Long id);
 
+    List<ClientPresenter> getAll();
 }

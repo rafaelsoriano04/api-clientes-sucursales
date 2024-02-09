@@ -1,14 +1,12 @@
 package com.nano.practicespringboot.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "address")
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,7 +18,7 @@ public class AddressModel {
     private String city;
     private String streetName;
     private String streetNumber;
-    private String type;
+    private String type; // 0=Matris 1=Normal
 
     @ManyToOne
     @JoinColumn(name = "client_id")
