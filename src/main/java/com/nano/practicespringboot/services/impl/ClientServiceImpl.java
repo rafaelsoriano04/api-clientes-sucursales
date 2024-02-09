@@ -23,8 +23,6 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
-    private AddressService addressService;
-    @Autowired
     private Utilities utilities;
     private final ModelMapper modelMapper;
 
@@ -50,14 +48,12 @@ public class ClientServiceImpl implements ClientService {
         if (clientRepository.existsByIdNumber(clientPresenter.getIdNumber())) {
             utilities.throwConflictException("Ya existe una persona con el idNumber=" + clientPresenter.getIdNumber());
         }
-
         utilities.validatePhoneNumber(clientPresenter.getPhoneNumber());
-
         utilities.validateIdNumber(clientPresenter.getIdType(), clientPresenter.getIdNumber());
-
         if (clientPresenter.getMatrix() == null) {
             utilities.throwConflictException("Debe ingresar una dirección matris");
         }
+        clientPresenter.getMatrix().setType("0");
         return clientToPresenter(clientRepository.save(clientPresenterToClient(clientPresenter)));
     }
 
@@ -87,7 +83,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<AddressPresenter> getAddressesByClient(Long id) {
         return clientRepository.getAddressesByClient(id).stream()
-                .map(address -> addressService.addressToPresenter(address)).collect(Collectors.toList());
+                .map(this::addressToPresenter).collect(Collectors.toList());
     }
 
     @Override
@@ -110,5 +106,11 @@ public class ClientServiceImpl implements ClientService {
         address.setClient(client);
         client.setAddressList(List.of(address));
         return client;
+    }
+
+    private AddressPresenter addressToPresenter(Address address) {
+        AddressPresenter addressPresenter = modelMapper.map(address, AddressPresenter.class);
+        addressPresenter.setClientId(address.getClient().getId());
+        return addressPresenter;
     }
 }

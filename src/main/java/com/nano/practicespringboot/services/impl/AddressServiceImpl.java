@@ -37,6 +37,7 @@ public class AddressServiceImpl implements AddressService {
                 utilities.throwConflictException("El cliente ya tiene dirección matris");
             }
         }
+        addressPresenter.setType("1");
         addressPresenter.setClientId(clientId);
         return addressToPresenter(addressRepository.save(addressPresenterToAddress(addressPresenter)));
     }
@@ -47,8 +48,7 @@ public class AddressServiceImpl implements AddressService {
         return address;
     }
 
-    @Override
-    public AddressPresenter addressToPresenter(Address address) {
+    private AddressPresenter addressToPresenter(Address address) {
         AddressPresenter addressPresenter = modelMapper.map(address, AddressPresenter.class);
         addressPresenter.setClientId(address.getClient().getId());
         return addressPresenter;
