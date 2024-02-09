@@ -1,7 +1,7 @@
 package com.nano.practicespringboot.repositories;
 
-import com.nano.practicespringboot.entities.AddressModel;
-import com.nano.practicespringboot.entities.ClientModel;
+import com.nano.practicespringboot.entities.Address;
+import com.nano.practicespringboot.entities.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -9,24 +9,24 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ClientRepository extends JpaRepository<ClientModel, Long> {
+public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c " +
-            "FROM ClientModel c " +
+            "FROM Client c " +
             "WHERE c.idNumber = COALESCE(:idNumber, c.idNumber) AND c.names = COALESCE(:names, c.names)")
-    List<ClientModel> getByParamerters(String idNumber, String names);
+    List<Client> getByParamerters(String idNumber, String names);
 
     Boolean existsByIdNumber (String idNumber);
 
     @Query("SELECT a " +
-            "FROM AddressModel a " +
-            "WHERE a.clientModel.id = :id")
-    List<AddressModel> getAddressesByClient(Long id);
+            "FROM Address a " +
+            "WHERE a.client.id = :id")
+    List<Address> getAddressesByClient(Long id);
 
     @Query("SELECT a " +
-            "FROM AddressModel a " +
-            "WHERE a.clientModel.id > :id " +
+            "FROM Address a " +
+            "WHERE a.client.id > :id " +
             "AND a.type = '0'")
-    AddressModel getMatrixByClient(Long id);
+    Address getMatrixByClient(Long id);
 
 
 }

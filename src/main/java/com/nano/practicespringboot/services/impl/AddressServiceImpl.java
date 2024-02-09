@@ -1,7 +1,7 @@
 package com.nano.practicespringboot.services.impl;
 
-import com.nano.practicespringboot.entities.AddressModel;
-import com.nano.practicespringboot.entities.ClientModel;
+import com.nano.practicespringboot.entities.Address;
+import com.nano.practicespringboot.entities.Client;
 import com.nano.practicespringboot.presenters.AddressPresenter;
 import com.nano.practicespringboot.repositories.AddressRepository;
 import com.nano.practicespringboot.services.AddressService;
@@ -24,20 +24,20 @@ public class AddressServiceImpl implements AddressService {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "El cliente ya tiene direccion matris");
         }
-        return addressModelToPresenter(addressRepository.save(addressPresenterToModel(addressPresenter)));
+        return addressToPresenter(addressRepository.save(addressPresenterToAddress(addressPresenter)));
     }
 
-    private AddressModel addressPresenterToModel(AddressPresenter addressPresenter) {
-        ClientModel client = clientService.getClient(addressPresenter.getClientId());
-        return AddressModel.builder().clientModel(client).id(addressPresenter.getId()).city(addressPresenter.getCity())
+    private Address addressPresenterToAddress(AddressPresenter addressPresenter) {
+        Client client = clientService.getClient(addressPresenter.getClientId());
+        return Address.builder().client(client).id(addressPresenter.getId()).city(addressPresenter.getCity())
                 .province(addressPresenter.getProvince()).streetName(addressPresenter.getStreetName())
                 .streetNumber(addressPresenter.getStreetNumber()).type(addressPresenter.getType()).build();
     }
 
-    private AddressPresenter addressModelToPresenter(AddressModel addressModel) {
-        return AddressPresenter.builder().id(addressModel.getId()).province(addressModel.getProvince())
-                .city(addressModel.getCity()).streetName(addressModel.getStreetName())
-                .streetNumber(addressModel.getStreetNumber()).clientId(addressModel.getClientModel().getId())
-                .type(addressModel.getType()).build();
+    private AddressPresenter addressToPresenter(Address address) {
+        return AddressPresenter.builder().id(address.getId()).province(address.getProvince())
+                .city(address.getCity()).streetName(address.getStreetName())
+                .streetNumber(address.getStreetNumber()).clientId(address.getClient().getId())
+                .type(address.getType()).build();
     }
 }

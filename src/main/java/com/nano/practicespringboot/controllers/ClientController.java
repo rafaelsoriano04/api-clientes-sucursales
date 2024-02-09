@@ -1,6 +1,5 @@
 package com.nano.practicespringboot.controllers;
 
-import com.nano.practicespringboot.entities.ClientModel;
 import com.nano.practicespringboot.presenters.AddressPresenter;
 import com.nano.practicespringboot.presenters.ClientPresenter;
 import com.nano.practicespringboot.services.ClientService;

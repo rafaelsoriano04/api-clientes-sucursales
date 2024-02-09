@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class ClientModel {
+public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +20,7 @@ public class ClientModel {
     private String idNumber;
     private String names;
     private String email;
-    private Integer phoneNumber;
-    @OneToMany(mappedBy = "clientModel", cascade = CascadeType.ALL)
-    private List<AddressModel> addressModelList;
+    private String phoneNumber;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private List<Address> addressList;
 }

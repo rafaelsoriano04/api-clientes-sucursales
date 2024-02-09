@@ -1,7 +1,6 @@
 package com.nano.practicespringboot.services;
 
-import com.nano.practicespringboot.entities.AddressModel;
-import com.nano.practicespringboot.entities.ClientModel;
+import com.nano.practicespringboot.entities.Client;
 import com.nano.practicespringboot.presenters.AddressPresenter;
 import com.nano.practicespringboot.presenters.ClientPresenter;
 
@@ -13,7 +12,7 @@ public interface ClientService {
 
     List<AddressPresenter> getAddressesByClient(Long id);
 
-    ClientModel getClient(Long id);
+    Client getClient(Long id);
 
     List<ClientPresenter> getAll();
 }

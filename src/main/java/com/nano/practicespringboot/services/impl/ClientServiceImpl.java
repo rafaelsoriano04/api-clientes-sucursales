@@ -1,10 +1,9 @@
 package com.nano.practicespringboot.services.impl;
 
-import ch.qos.logback.core.net.server.Client;
-import com.nano.practicespringboot.entities.AddressModel;
+import com.nano.practicespringboot.entities.Address;
 import com.nano.practicespringboot.presenters.AddressPresenter;
 import com.nano.practicespringboot.presenters.ClientPresenter;
-import com.nano.practicespringboot.entities.ClientModel;
+import com.nano.practicespringboot.entities.Client;
 import com.nano.practicespringboot.repositories.ClientRepository;
 import com.nano.practicespringboot.services.ClientService;
 import jakarta.transaction.Transactional;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,14 +22,14 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<ClientPresenter> getAll() {
-        return clientRepository.findAll().stream().map(this::clientModelToPresenter).collect(Collectors.toList());
+        return clientRepository.findAll().stream().map(this::clientToPresenter).collect(Collectors.toList());
     }
 
 
     @Override
     public List<ClientPresenter> getByParameters(String idNumber, String names) {
         return clientRepository.getByParamerters(idNumber, names).stream()
-                .map(this::clientModelToPresenter).collect(Collectors.toList());
+                .map(this::clientToPresenter).collect(Collectors.toList());
     }
 
     @Override
@@ -45,49 +43,49 @@ public class ClientServiceImpl implements ClientService {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Debe ingresar una direccion matris");
         }
-        return clientModelToPresenter(clientRepository.save(clientPresenterToModel(clientPresenter)));
+        return clientToPresenter(clientRepository.save(clientPresenterToClient(clientPresenter)));
     }
 
     @Override
     public List<AddressPresenter> getAddressesByClient(Long id) {
         return clientRepository.getAddressesByClient(id).stream()
-                .map(this::addressModelToPresenter).collect(Collectors.toList());
+                .map(this::addressToPresenter).collect(Collectors.toList());
     }
 
     private AddressPresenter getMatrixByClient(Long id) {
-        return addressModelToPresenter(clientRepository.getMatrixByClient(id));
+        return addressToPresenter(clientRepository.getMatrixByClient(id));
     }
 
     @Override
-    public ClientModel getClient(Long id) {
+    public Client getClient(Long id) {
         return clientRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT,
                 "No existe el cliente con id=" + id));
     }
 
-    private ClientPresenter clientModelToPresenter(ClientModel clientModel) {
-        return ClientPresenter.builder().id(clientModel.getId()).idType(clientModel.getIdType()).idNumber(clientModel.getIdNumber())
-                .names(clientModel.getNames()).email(clientModel.getEmail()).phoneNumber(clientModel.getPhoneNumber())
-                .matrix(addressModelToPresenter(clientModel.getAddressModelList().get(0))).build();
+    private ClientPresenter clientToPresenter(Client client) {
+        return ClientPresenter.builder().id(client.getId()).idType(client.getIdType()).idNumber(client.getIdNumber())
+                .names(client.getNames()).email(client.getEmail()).phoneNumber(client.getPhoneNumber())
+                .matrix(addressToPresenter(client.getAddressList().get(0))).build();
     }
 
     
-    private ClientModel clientPresenterToModel(ClientPresenter clientPresenter) {
-        ClientModel clientModel = ClientModel.builder().id(clientPresenter.getId()).idType(clientPresenter.getIdType())
+    private Client clientPresenterToClient(ClientPresenter clientPresenter) {
+        Client client = Client.builder().id(clientPresenter.getId()).idType(clientPresenter.getIdType())
                 .idNumber(clientPresenter.getIdNumber()).names(clientPresenter.getNames())
                 .email(clientPresenter.getEmail()).phoneNumber(clientPresenter.getPhoneNumber()).build();
-        //clientModel.setAddressModelList(List.of(addressPresenterToModel(clientPresenter.getMatrix(), clientModel)));
-        return clientModel;
+        client.setAddressList(List.of(addressPresenterToAddress(clientPresenter.getMatrix(), client)));
+        return client;
     }
 
-    private AddressModel addressPresenterToModel(AddressPresenter addressPresenter, ClientModel clientModel) {
-        return AddressModel.builder().id(addressPresenter.getId()).province(addressPresenter.getProvince())
+    private Address addressPresenterToAddress(AddressPresenter addressPresenter, Client client) {
+        return Address.builder().id(addressPresenter.getId()).province(addressPresenter.getProvince())
                 .city(addressPresenter.getCity()).streetNumber(addressPresenter.getStreetNumber())
-                .streetName(addressPresenter.getStreetName()).type(addressPresenter.getType()).clientModel(clientModel).build();
+                .streetName(addressPresenter.getStreetName()).type(addressPresenter.getType()).client(client).build();
     }
 
-    private AddressPresenter addressModelToPresenter(AddressModel addressModel) {
-        return AddressPresenter.builder().id(addressModel.getId()).city(addressModel.getCity()).province(addressModel.getProvince())
-                .streetName(addressModel.getStreetName()).streetNumber(addressModel.getStreetNumber()).build();
+    private AddressPresenter addressToPresenter(Address address) {
+        return AddressPresenter.builder().id(address.getId()).city(address.getCity()).province(address.getProvince())
+                .streetName(address.getStreetName()).streetNumber(address.getStreetNumber()).build();
     }
 
 

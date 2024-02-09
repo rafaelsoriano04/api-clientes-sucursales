@@ -17,6 +17,6 @@ public class ClientPresenter {
     private String idNumber;
     private String names;
     private String email;
-    private Integer phoneNumber;
+    private String phoneNumber;
     private AddressPresenter matrix;
 }

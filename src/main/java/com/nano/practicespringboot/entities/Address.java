@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddressModel {
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,5 +22,5 @@ public class AddressModel {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private ClientModel clientModel;
+    private Client client;
 }
