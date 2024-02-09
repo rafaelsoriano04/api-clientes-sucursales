@@ -2,6 +2,7 @@ package com.nano.practicespringboot.services.impl;
 
 import com.nano.practicespringboot.entities.Address;
 import com.nano.practicespringboot.entities.Client;
+import com.nano.practicespringboot.enums.AddressType;
 import com.nano.practicespringboot.presenters.AddressPresenter;
 import com.nano.practicespringboot.repositories.AddressRepository;
 import com.nano.practicespringboot.services.AddressService;
@@ -32,12 +33,12 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public AddressPresenter saveAddressByClient(Long clientId, AddressPresenter addressPresenter) {
-        if (addressPresenter.getType().equals("0")) {
+        if (addressPresenter.getType().equals(AddressType.MATRIS)) {
             if (!addressRepository.existsByType(clientId).isEmpty()) {
                 utilities.throwConflictException("El cliente ya tiene dirección matris");
             }
         }
-        addressPresenter.setType("1");
+        addressPresenter.setType(AddressType.NORMAL);
         addressPresenter.setClientId(clientId);
         return addressToPresenter(addressRepository.save(addressPresenterToAddress(addressPresenter)));
     }

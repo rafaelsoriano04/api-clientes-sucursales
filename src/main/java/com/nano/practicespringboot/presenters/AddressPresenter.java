@@ -1,5 +1,6 @@
 package com.nano.practicespringboot.presenters;
 
+import com.nano.practicespringboot.enums.AddressType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,6 @@ public class AddressPresenter {
     private String city;
     private String streetName;
     private String streetNumber;
-    private String type;
+    private AddressType type;
     private Long clientId;
 }

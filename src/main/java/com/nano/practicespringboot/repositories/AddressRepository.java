@@ -12,6 +12,6 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     @Query("SELECT a " +
             "FROM Address a " +
             "WHERE a.client.id = :id " +
-            "AND a.type = '0'")
+            "AND a.type = 'MATRIS'")
     List<Address> existsByType(Long id);
 }

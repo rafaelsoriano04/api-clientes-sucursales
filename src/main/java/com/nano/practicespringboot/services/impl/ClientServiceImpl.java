@@ -1,11 +1,11 @@
 package com.nano.practicespringboot.services.impl;
 
 import com.nano.practicespringboot.entities.Address;
+import com.nano.practicespringboot.enums.AddressType;
 import com.nano.practicespringboot.presenters.AddressPresenter;
 import com.nano.practicespringboot.presenters.ClientPresenter;
 import com.nano.practicespringboot.entities.Client;
 import com.nano.practicespringboot.repositories.ClientRepository;
-import com.nano.practicespringboot.services.AddressService;
 import com.nano.practicespringboot.services.ClientService;
 import com.nano.practicespringboot.utilities.Utilities;
 import jakarta.transaction.Transactional;
@@ -45,15 +45,15 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public ClientPresenter saveClient(ClientPresenter clientPresenter) {
-        if (clientRepository.existsByIdNumber(clientPresenter.getIdNumber())) {
-            utilities.throwConflictException("Ya existe una persona con el idNumber=" + clientPresenter.getIdNumber());
+        if (clientRepository.existsByIdentificationNumber(clientPresenter.getIdentificationNumber())) {
+            utilities.throwConflictException("Ya existe una persona con el idNumber=" + clientPresenter.getIdentificationNumber());
         }
         utilities.validatePhoneNumber(clientPresenter.getPhoneNumber());
-        utilities.validateIdNumber(clientPresenter.getIdType(), clientPresenter.getIdNumber());
+        utilities.validateIdNumber(clientPresenter.getIdentificationType(), clientPresenter.getIdentificationNumber());
         if (clientPresenter.getMatrix() == null) {
             utilities.throwConflictException("Debe ingresar una dirección matris");
         }
-        clientPresenter.getMatrix().setType("0");
+        clientPresenter.getMatrix().setType(AddressType.MATRIS);
         return clientToPresenter(clientRepository.save(clientPresenterToClient(clientPresenter)));
     }
 
@@ -64,10 +64,9 @@ public class ClientServiceImpl implements ClientService {
                 "No se encuentra el registro del cliente con id=" + id));
 
         utilities.validatePhoneNumber(request.getPhoneNumber());
-        utilities.validateIdNumber(request.getIdType(), request.getIdNumber());
-
-        client.setIdType(request.getIdType());
-        client.setIdNumber(request.getIdNumber());
+        utilities.validateIdNumber(request.getIdentificationType(), request.getIdentificationNumber());
+        client.setIdentificationType(request.getIdentificationType());
+        client.setIdentificationNumber(request.getIdentificationNumber());
         client.setNames(request.getNames());
         client.setEmail(request.getEmail());
         client.setPhoneNumber(request.getPhoneNumber());

@@ -1,5 +1,6 @@
 package com.nano.practicespringboot.entities;
 
+import com.nano.practicespringboot.enums.IdentificationType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,8 +17,9 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String idType; // RUC o CI
-    private String idNumber;
+    @Enumerated(EnumType.STRING)
+    private IdentificationType identificationType; // RUC o CI
+    private String identificationNumber;
     private String names;
     private String email;
     private String phoneNumber;

@@ -1,14 +1,15 @@
 package com.nano.practicespringboot.utilities;
 
+import com.nano.practicespringboot.enums.IdentificationType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 @Component
 public class Utilities {
-    public void validateIdNumber(String type, String idNumber) {
-        if (type.equalsIgnoreCase("RUC") || type.equalsIgnoreCase("Ci")) {
-            if (type.equalsIgnoreCase("RUC")) {
+    public void validateIdNumber(IdentificationType type, String idNumber) {
+        if (type.equals(IdentificationType.CI) || type.equals(IdentificationType.RUC)) {
+            if (type.equals(IdentificationType.RUC)) {
                 validateRuc(idNumber);
             } else {
                 validateCi(idNumber);
