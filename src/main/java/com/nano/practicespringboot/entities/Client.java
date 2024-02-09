@@ -21,6 +21,6 @@ public class Client {
     private String names;
     private String email;
     private String phoneNumber;
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addressList;
 }

@@ -15,6 +15,6 @@ public class AddressPresenter {
     private String city;
     private String streetName;
     private String streetNumber;
-    private Long clientId;
     private String type;
+    private Long clientId;
 }

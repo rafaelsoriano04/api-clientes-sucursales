@@ -11,8 +11,8 @@ public class AddressController {
     @Autowired
     private AddressService addressService;
 
-    @PostMapping
-    public AddressPresenter saveAddressForExistingClient(@RequestBody AddressPresenter addressPresenter) {
-        return addressService.saveAddressForExistingClient(addressPresenter);
+    @PostMapping("/{clientId}")
+    public AddressPresenter saveAddressByClient(@PathVariable Long clientId, @RequestBody AddressPresenter addressPresenter) {
+        return addressService.saveAddressByClient(clientId, addressPresenter);
     }
 }

@@ -19,14 +19,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     @Query("SELECT a " +
             "FROM Address a " +
-            "WHERE a.client.id = :id")
+            "WHERE a.client.id = :id " +
+            "AND a.type = '1'")
     List<Address> getAddressesByClient(Long id);
-
-    @Query("SELECT a " +
-            "FROM Address a " +
-            "WHERE a.client.id > :id " +
-            "AND a.type = '0'")
-    Address getMatrixByClient(Long id);
-
-
 }

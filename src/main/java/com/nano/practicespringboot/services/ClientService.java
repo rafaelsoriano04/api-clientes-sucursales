@@ -15,4 +15,8 @@ public interface ClientService {
     Client getClient(Long id);
 
     List<ClientPresenter> getAll();
+
+    ClientPresenter updateClient(Long id, ClientPresenter request);
+
+    void deleteClient(Long id);
 }

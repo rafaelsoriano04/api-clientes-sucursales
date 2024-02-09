@@ -14,17 +14,28 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
-    @GetMapping("/list")
+    @GetMapping
     public List<ClientPresenter> getAll(){
         return clientService.getAll();
     }
 
-    @GetMapping("/list/parameter")
+    @GetMapping("/parameter")
     public List<ClientPresenter> getByParameters(@RequestParam(required = false) String idNumber, @RequestParam(required = false) String names) {
         return clientService.getByParameters(idNumber, names);
     }
 
-    @GetMapping("/list/{id}/address")
+    @PutMapping("/{id}")
+    public ClientPresenter updateClient(@PathVariable Long id, @RequestBody ClientPresenter request) {
+        return clientService.updateClient(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteClient(@PathVariable Long id) {
+        clientService.deleteClient(id);
+    }
+
+
+    @GetMapping("/{id}/address")
     public List<AddressPresenter> getAddressByClient(@PathVariable Long id) {
         return clientService.getAddressesByClient(id);
     }
