@@ -12,14 +12,14 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c " +
             "FROM Client c " +
-            "WHERE c.idNumber = COALESCE(:idNumber, c.idNumber) AND c.names = COALESCE(:names, c.names)")
-    List<Client> getByParamerters(String idNumber, String names);
+            "WHERE c.identificationNumber = COALESCE(:identificationNumber, c.identificationNumber) AND c.names = COALESCE(:names, c.names)")
+    List<Client> getByParamerters(String identificationNumber, String names);
 
-    Boolean existsByIdNumber (String idNumber);
+    Boolean existsByIdentificationNumber(String identificationNumber);
 
     @Query("SELECT a " +
             "FROM Address a " +
             "WHERE a.client.id = :id " +
-            "AND a.type = '1'")
+            "AND a.type = 'NORMAL'")
     List<Address> getAddressesByClient(Long id);
 }

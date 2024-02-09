@@ -1,5 +1,6 @@
 package com.nano.practicespringboot.entities;
 
+import com.nano.practicespringboot.enums.AddressType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,8 @@ public class Address {
     private String city;
     private String streetName;
     private String streetNumber;
-    private String type; // 0=Matris 1=Normal
+    @Enumerated(EnumType.STRING)
+    private AddressType type; // Matris o Normal
 
     @ManyToOne
     @JoinColumn(name = "client_id")
