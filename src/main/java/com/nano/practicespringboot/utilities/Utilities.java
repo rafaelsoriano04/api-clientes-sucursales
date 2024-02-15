@@ -96,8 +96,7 @@ public class Utilities {
     }
 
     public void throwConflictException(String message) {
-        throw new ResponseStatusException(HttpStatus.CONFLICT,
-                message);
+
     }
 
 

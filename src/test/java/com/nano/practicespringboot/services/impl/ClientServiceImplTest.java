@@ -17,6 +17,8 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -35,7 +37,7 @@ class ClientServiceImplTest {
     @Spy
     private ModelMapper modelMapper;
 
-    private TestData testData= new TestData();;
+    private final TestData testData = new TestData();
 
     @BeforeEach
     public void prepare() {
@@ -67,6 +69,19 @@ class ClientServiceImplTest {
     }
 
     @Test
-    void updateClient() {
+    void shouldSaveClientFailedByIdNumberExists() {
+        when(clientRepository.existsByIdentificationNumber(any())).thenReturn(true);
+
+        ClientPresenter clientPresenter = ClientPresenter.builder().identificationNumber("1").build();
+
+
+        ResponseStatusException responseStatusException = org.junit.jupiter.api.Assertions.assertThrows(ResponseStatusException.class, () -> {
+            clientService.saveClient(clientPresenter);
+        });
+
+        Assertions.assertThat(responseStatusException.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        Assertions.assertThat(responseStatusException.getReason()).isEqualTo("Ya existe una persona con el idNumber=" + clientPresenter.getIdentificationNumber());
+
+        verify(clientRepository, never()).save(any());
     }
 }

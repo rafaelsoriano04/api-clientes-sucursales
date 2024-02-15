@@ -46,10 +46,10 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public ClientPresenter saveClient(ClientPresenter clientPresenter) {
         if (clientRepository.existsByIdentificationNumber(clientPresenter.getIdentificationNumber())) {
-            utilities.throwConflictException("Ya existe una persona con el idNumber=" + clientPresenter.getIdentificationNumber());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe una persona con el idNumber=" + clientPresenter.getIdentificationNumber());
         }
         if (!utilities.validatePhoneNumber(clientPresenter.getPhoneNumber())) {
-            utilities.throwPreconditionException("El número de teléfono no es válido");
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "El número de teléfono no es válido");
         }
         if (!utilities.validateIdNumber(clientPresenter.getIdentificationType(), clientPresenter.getIdentificationNumber())) {
             utilities.throwPreconditionException("El número de RUC o CI no es válido");
