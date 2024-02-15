@@ -48,8 +48,12 @@ public class ClientServiceImpl implements ClientService {
         if (clientRepository.existsByIdentificationNumber(clientPresenter.getIdentificationNumber())) {
             utilities.throwConflictException("Ya existe una persona con el idNumber=" + clientPresenter.getIdentificationNumber());
         }
-        utilities.validatePhoneNumber(clientPresenter.getPhoneNumber());
-        utilities.validateIdNumber(clientPresenter.getIdentificationType(), clientPresenter.getIdentificationNumber());
+        if (!utilities.validatePhoneNumber(clientPresenter.getPhoneNumber())) {
+            utilities.throwPreconditionException("El número de teléfono no es válido");
+        }
+        if (!utilities.validateIdNumber(clientPresenter.getIdentificationType(), clientPresenter.getIdentificationNumber())) {
+            utilities.throwPreconditionException("El número de RUC o CI no es válido");
+        }
         if (clientPresenter.getMatrix() == null) {
             utilities.throwConflictException("Debe ingresar una dirección matris");
         }
