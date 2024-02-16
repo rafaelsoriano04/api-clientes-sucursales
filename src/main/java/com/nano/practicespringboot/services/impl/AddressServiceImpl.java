@@ -1,14 +1,12 @@
 package com.nano.practicespringboot.services.impl;
 
 import com.nano.practicespringboot.entities.Address;
-import com.nano.practicespringboot.entities.Client;
 import com.nano.practicespringboot.enums.AddressType;
 import com.nano.practicespringboot.presenters.AddressPresenter;
 import com.nano.practicespringboot.repositories.AddressRepository;
 import com.nano.practicespringboot.services.AddressService;
 import com.nano.practicespringboot.services.ClientService;
 import com.nano.practicespringboot.utilities.Utilities;
-import jdk.jshell.execution.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,13 +28,13 @@ public class AddressServiceImpl implements AddressService {
         this.modelMapper = new ModelMapper();
     }
 
-
     @Override
     public AddressPresenter saveAddressByClient(Long clientId, AddressPresenter addressPresenter) {
         if (addressPresenter.getType().equals(AddressType.MATRIS)) {
-            if (!addressRepository.existsByType(clientId).isEmpty()) {
-                utilities.throwConflictException("El cliente ya tiene dirección matris");
+            if (addressRepository.existsByType(clientId).isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "El cliente no existe");
             }
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El cliente ya tiene dirección matris");
         }
         addressPresenter.setType(AddressType.NORMAL);
         addressPresenter.setClientId(clientId);

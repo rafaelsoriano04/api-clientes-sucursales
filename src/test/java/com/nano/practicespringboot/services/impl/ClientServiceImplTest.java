@@ -32,15 +32,12 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ClientServiceImplTest {
-
     @InjectMocks
     private ClientService clientService = new ClientServiceImpl();
-
     @Mock
     private ClientRepository clientRepository;
     @Mock
     private Utilities utilities;
-
     @Spy
     private ModelMapper modelMapper;
 
@@ -84,7 +81,6 @@ class ClientServiceImplTest {
 
     @Test
     void shouldSaveClient() {
-        Client clientExpected = testData.getClientInstance();
         ClientPresenter clientPresenter = testData.getClientPresenterInstance();
 
         when(clientRepository.existsByIdentificationNumber(any())).thenReturn(false);
@@ -92,7 +88,7 @@ class ClientServiceImplTest {
         when(utilities.validateIdNumber(any(), any())).thenReturn(true);
 
         ArgumentCaptor<Client> clientCaptor = ArgumentCaptor.forClass(Client.class);
-        when(clientRepository.save(any())).thenReturn(clientExpected);
+        when(clientRepository.save(any())).thenReturn(testData.getClientInstance());
 
         ClientPresenter result = clientService.saveClient(clientPresenter);
 
@@ -233,7 +229,8 @@ class ClientServiceImplTest {
 
     @Test
     void shouldUpdateClientFailedByInvalidIdNumber() {
-        when(clientRepository.findById(any())).thenReturn(Optional.of(testData.getClientInstance()));;
+        when(clientRepository.findById(any())).thenReturn(Optional.of(testData.getClientInstance()));
+        ;
         when(utilities.validatePhoneNumber(any())).thenReturn(true);
 
         ClientPresenter clientPresenter = ClientPresenter.builder()
