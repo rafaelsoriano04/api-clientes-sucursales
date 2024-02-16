@@ -33,7 +33,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<ClientPresenter> getAll() {
-        return clientRepository.findAll().stream().map(this::clientToPresenter).collect(Collectors.toList());
+        return clientRepository.findAll().stream()
+                .map(this::clientToPresenter)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -52,10 +54,10 @@ public class ClientServiceImpl implements ClientService {
             throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "El número de teléfono no es válido");
         }
         if (!utilities.validateIdNumber(clientPresenter.getIdentificationType(), clientPresenter.getIdentificationNumber())) {
-            utilities.throwPreconditionException("El número de RUC o CI no es válido");
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "El número de RUC o CI no es válido");
         }
         if (clientPresenter.getMatrix() == null) {
-            utilities.throwConflictException("Debe ingresar una dirección matris");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Debe ingresar una dirección matris");
         }
         clientPresenter.getMatrix().setType(AddressType.MATRIS);
         return clientToPresenter(clientRepository.save(clientPresenterToClient(clientPresenter)));
@@ -66,9 +68,12 @@ public class ClientServiceImpl implements ClientService {
     public ClientPresenter updateClient(Long id, ClientPresenter request) {
         Client client = clientRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,
                 "No se encuentra el registro del cliente con id=" + id));
-
-        utilities.validatePhoneNumber(request.getPhoneNumber());
-        utilities.validateIdNumber(request.getIdentificationType(), request.getIdentificationNumber());
+        if (!utilities.validatePhoneNumber(request.getPhoneNumber())) {
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "El número de teléfono no es válido");
+        }
+        if (!utilities.validateIdNumber(request.getIdentificationType(), request.getIdentificationNumber())) {
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "El número de RUC o CI no es válido");
+        }
         client.setIdentificationType(request.getIdentificationType());
         client.setIdentificationNumber(request.getIdentificationNumber());
         client.setNames(request.getNames());

@@ -17,8 +17,9 @@ public class TestData {
         client.setIdentificationType(IdentificationType.CI);
         client.setIdentificationNumber("1805468467");
         client.setNames("Rafael Soriano");
-        client.setAddressList(List.of(new Address()));
-
+        Address address = new Address(1L, "Tun", "Amb",
+                "Agua", "02", AddressType.MATRIS, client);
+        client.setAddressList(List.of(address));
         return client;
     }
 
