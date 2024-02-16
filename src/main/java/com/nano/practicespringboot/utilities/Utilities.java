@@ -1,18 +1,10 @@
 package com.nano.practicespringboot.utilities;
 
 import com.nano.practicespringboot.enums.IdentificationType;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 @Component
 public class Utilities {
-    public boolean validateIdNumber(IdentificationType type, String idNumber) {
-        if (type.equals(IdentificationType.RUC)) {
-            return validateRuc(idNumber);
-        }
-        return validateCi(idNumber);
-    }
 
     public boolean validatePhoneNumber(String phoneNumber) {
         try {
@@ -23,7 +15,14 @@ public class Utilities {
         }
     }
 
-    private boolean validateCi(String ci) {
+    public boolean validateIdNumber(IdentificationType type, String idNumber) {
+        if (type.equals(IdentificationType.RUC)) {
+            return validateRuc(idNumber);
+        }
+        return validateCi(idNumber);
+    }
+
+    public boolean validateCi(String ci) {
         boolean validation;
         // Verificar que la cédula tenga 10 dígitos
         if (ci == null || ci.length() != 10) {
@@ -51,9 +50,8 @@ public class Utilities {
         return validation;
     }
 
-    private boolean validateRuc(String ruc) {
+    public boolean validateRuc(String ruc) {
         boolean validation;
-        // Verificar que la cédula tenga 10 dígitos
         if (ruc == null || ruc.length() != 13) {
             validation = false;
         } else {
@@ -89,15 +87,4 @@ public class Utilities {
         }
         return validation;
     }
-
-    public void throwPreconditionException(String message) {
-        throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,
-                message);
-    }
-
-    public void throwConflictException(String message) {
-
-    }
-
-
 }

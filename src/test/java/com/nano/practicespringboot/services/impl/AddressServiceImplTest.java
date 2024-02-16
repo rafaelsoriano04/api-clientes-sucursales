@@ -6,7 +6,7 @@ import com.nano.practicespringboot.presenters.AddressPresenter;
 import com.nano.practicespringboot.repositories.AddressRepository;
 import com.nano.practicespringboot.services.AddressService;
 import com.nano.practicespringboot.services.ClientService;
-import com.nano.practicespringboot.utilities.TestData;
+import com.nano.practicespringboot.TestData;
 import com.nano.practicespringboot.utilities.Utilities;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

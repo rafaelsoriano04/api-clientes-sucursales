@@ -7,7 +7,7 @@ import com.nano.practicespringboot.presenters.ClientPresenter;
 import com.nano.practicespringboot.repositories.ClientRepository;
 import com.nano.practicespringboot.services.ClientService;
 import com.nano.practicespringboot.entities.Client;
-import com.nano.practicespringboot.utilities.TestData;
+import com.nano.practicespringboot.TestData;
 import com.nano.practicespringboot.utilities.Utilities;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package com.nano.practicespringboot.utilities;
+package com.nano.practicespringboot;
 
 
 import com.nano.practicespringboot.entities.Address;
