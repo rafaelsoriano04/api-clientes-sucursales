@@ -8,7 +8,7 @@ public class Utilities {
 
     public boolean validatePhoneNumber(String phoneNumber) {
         try {
-            Integer number = Integer.parseInt(phoneNumber);
+            Integer.parseInt(phoneNumber);
             return phoneNumber.length() == 10;
         } catch (Exception e) {
             return false;
