@@ -29,15 +29,13 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public AddressPresenter saveAddressByClient(Long clientId, AddressPresenter addressPresenter) {
-        if (addressPresenter.getType().equals(AddressType.MATRIS)) {
-            if (addressRepository.existsByType(clientId).isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "El cliente no existe");
-            }
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "El cliente ya tiene dirección matris");
+    public AddressPresenter saveAddressByClient(AddressPresenter addressPresenter) {
+        if (clientService.getClient(addressPresenter.getClientId()) == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El cliente no existe");
         }
-        addressPresenter.setType(AddressType.NORMAL);
-        addressPresenter.setClientId(clientId);
+        if (addressPresenter.getType().equals(AddressType.MATRIS)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El cliente ya tiene una dirección matris");
+        }
         return addressToPresenter(addressRepository.save(addressPresenterToAddress(addressPresenter)));
     }
 
@@ -48,8 +46,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     private AddressPresenter addressToPresenter(Address address) {
-        AddressPresenter addressPresenter = modelMapper.map(address, AddressPresenter.class);
-        addressPresenter.setClientId(address.getClient().getId());
-        return addressPresenter;
+        return modelMapper.map(address, AddressPresenter.class);
     }
 }

@@ -11,8 +11,8 @@ public class AddressController {
     @Autowired
     private AddressService addressService;
 
-    @PostMapping("/{clientId}")
-    public AddressPresenter saveAddressByClient(@PathVariable Long clientId, @RequestBody AddressPresenter addressPresenter) {
-        return addressService.saveAddressByClient(clientId, addressPresenter);
+    @PostMapping
+    public AddressPresenter saveAddressByClient(@RequestBody AddressPresenter addressPresenter) {
+        return addressService.saveAddressByClient(addressPresenter);
     }
 }

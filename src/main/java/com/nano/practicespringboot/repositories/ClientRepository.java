@@ -13,7 +13,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c " +
             "FROM Client c " +
             "WHERE c.identificationNumber = COALESCE(:identificationNumber, c.identificationNumber) AND c.names = COALESCE(:names, c.names)")
-    List<Client> getByParamerters(String identificationNumber, String names);
+    List<Client> getByParameters(String identificationNumber, String names);
 
     Boolean existsByIdentificationNumber(String identificationNumber);
 

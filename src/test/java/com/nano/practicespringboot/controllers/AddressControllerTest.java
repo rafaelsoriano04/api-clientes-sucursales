@@ -26,12 +26,12 @@ class AddressControllerTest {
     @Test
     void shouldSaveAddressByClient() {
         AddressPresenter addressPresenter = testData.getClientPresenterInstance().getMatrix();
-        when(addressService.saveAddressByClient(any(), any()))
+        when(addressService.saveAddressByClient(any()))
                 .thenReturn(addressPresenter);
 
-        AddressPresenter result = addressController.saveAddressByClient(1L, addressPresenter);
+        AddressPresenter result = addressController.saveAddressByClient(addressPresenter);
 
-        verify(addressService, times(1)).saveAddressByClient(any(), any());
+        verify(addressService, times(1)).saveAddressByClient(any());
         Assertions.assertThat(result).isNotNull();
     }
 }

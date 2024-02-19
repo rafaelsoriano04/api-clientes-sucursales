@@ -1,6 +1,7 @@
 package com.nano.practicespringboot.services.impl;
 
 import com.nano.practicespringboot.entities.Address;
+import com.nano.practicespringboot.enums.AddressType;
 import com.nano.practicespringboot.enums.IdentificationType;
 import com.nano.practicespringboot.presenters.AddressPresenter;
 import com.nano.practicespringboot.presenters.ClientPresenter;
@@ -50,31 +51,59 @@ class ClientServiceImplTest {
 
 
     @Test
-    void ShouldGetALl() {
-        List<Client> clientList = new ArrayList<>();
+    void shouldGetAll() {
+        List<Client> clientList = List.of(testData.getClientInstance());
         when(clientRepository.findAll()).thenReturn(clientList);
 
         List<ClientPresenter> result = clientService.getAll();
 
         Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result).isNotEmpty();
     }
 
     @Test
-    void ShoudGetByParameters() {
+    void shouldGetAllEmptyList() {
         List<Client> clientList = new ArrayList<>();
-        clientList.add(testData.getClientInstance());
-        when(clientRepository.getByParamerters(any(), any())).thenReturn(clientList);
+        when(clientRepository.findAll()).thenReturn(clientList);
+
+        ResponseStatusException responseStatusException = org.junit.jupiter.api.Assertions.assertThrows(ResponseStatusException.class, () -> {
+            clientService.getAll();
+        });
+
+        Assertions.assertThat(responseStatusException.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        Assertions.assertThat(responseStatusException.getReason()).isEqualTo("No existen clientes");
+    }
+
+    @Test
+    void shouldGetByParametersEmptyList() {
+        List<Client> clientList = new ArrayList<>();
+        when(clientRepository.getByParameters(any(), any())).thenReturn(clientList);
+
+        ResponseStatusException responseStatusException = org.junit.jupiter.api.Assertions.assertThrows(ResponseStatusException.class, () -> {
+            clientService.getByParameters(any(), any());
+        });
+
+        Assertions.assertThat(responseStatusException.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        Assertions.assertThat(responseStatusException.getReason()).isEqualTo("No existen clientes");
+    }
+
+    @Test
+    void shouldGetByParameters() {
+        List<Client> clientList = List.of(testData.getClientInstance());
+
+        when(clientRepository.getByParameters(any(), any())).thenReturn(clientList);
 
         ArgumentCaptor<String> stringArgumentCaptor1 = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> stringArgumentCaptor2 = ArgumentCaptor.forClass(String.class);
         List<ClientPresenter> result = clientService.getByParameters(clientList.get(0).getIdentificationNumber(),
                 clientList.get(0).getNames());
 
-        verify(clientRepository).getByParamerters(stringArgumentCaptor1.capture(), stringArgumentCaptor2.capture());
+        verify(clientRepository).getByParameters(stringArgumentCaptor1.capture(), stringArgumentCaptor2.capture());
         String idNumber = stringArgumentCaptor1.getValue();
         String names = stringArgumentCaptor2.getValue();
 
         Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result).isNotEmpty();
         Assertions.assertThat(idNumber).isEqualTo(clientList.get(0).getIdentificationNumber());
         Assertions.assertThat(names).isEqualTo(clientList.get(0).getNames());
     }
@@ -97,9 +126,29 @@ class ClientServiceImplTest {
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getMatrix()).isNotNull();
+        Assertions.assertThat(result.getMatrix().getType()).isEqualTo(AddressType.MATRIS);
         Assertions.assertThat(capturedClient.getId()).isEqualTo(1L);
         Assertions.assertThat(capturedClient.getNames()).isEqualTo("Rafa");
         Assertions.assertThat(capturedClient.getIdentificationNumber()).isEqualTo("1805468467");
+    }
+
+    @Test
+    void shouldSaveClientFailedByAddressType() {
+        ClientPresenter clientPresenter = testData.getClientPresenterInstance();
+        clientPresenter.getMatrix().setType(AddressType.NORMAL);
+
+        when(clientRepository.existsByIdentificationNumber(any())).thenReturn(false);
+        when(utilities.validatePhoneNumber(any())).thenReturn(true);
+        when(utilities.validateIdNumber(any(), any())).thenReturn(true);
+
+        ResponseStatusException responseStatusException = org.junit.jupiter.api.Assertions.assertThrows(ResponseStatusException.class, () -> {
+            clientService.saveClient(clientPresenter);
+        });
+
+        Assertions.assertThat(responseStatusException.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        Assertions.assertThat(responseStatusException.getReason()).isEqualTo("Debe ingresar una dirección matris");
+
+        verify(clientRepository, never()).save(any());
     }
 
     @Test
@@ -176,10 +225,17 @@ class ClientServiceImplTest {
     @Test
     void shouldUpdateClient() {
         ClientPresenter clientPresenter = testData.getClientPresenterInstance();
+        clientPresenter.setIdentificationType(IdentificationType.RUC);
+        clientPresenter.setIdentificationNumber("1803332715001");
+        clientPresenter.setNames("Juan");
+        clientPresenter.setEmail("juan@");
+        clientPresenter.setPhoneNumber("0987289560");
+
         when(clientRepository.findById(any())).thenReturn(Optional.of(testData.getClientInstance()));
         when(utilities.validatePhoneNumber(any())).thenReturn(true);
         when(utilities.validateIdNumber(any(), any())).thenReturn(true);
         when(clientRepository.save(any())).thenReturn(testData.getClientInstance());
+        when(clientRepository.existsByIdentificationNumber(any())).thenReturn(false);
 
         ArgumentCaptor<Client> clientArgumentCaptor = ArgumentCaptor.forClass(Client.class);
 
@@ -190,10 +246,10 @@ class ClientServiceImplTest {
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(updatedClient.getIdentificationType()).isEqualTo(clientPresenter.getIdentificationType());
-        Assertions.assertThat(updatedClient.getId()).isEqualTo(clientPresenter.getId());
-        Assertions.assertThat(updatedClient.getNames()).isEqualTo(clientPresenter.getNames());
         Assertions.assertThat(updatedClient.getIdentificationNumber()).isEqualTo(clientPresenter.getIdentificationNumber());
-        Assertions.assertThat(updatedClient.getAddressList().get(0).getId()).isEqualTo(clientPresenter.getMatrix().getId());
+        Assertions.assertThat(updatedClient.getNames()).isEqualTo(clientPresenter.getNames());
+        Assertions.assertThat(updatedClient.getEmail()).isEqualTo(clientPresenter.getEmail());
+        Assertions.assertThat(updatedClient.getPhoneNumber()).isEqualTo(clientPresenter.getPhoneNumber());
     }
 
     @Test
@@ -230,7 +286,6 @@ class ClientServiceImplTest {
     @Test
     void shouldUpdateClientFailedByInvalidIdNumber() {
         when(clientRepository.findById(any())).thenReturn(Optional.of(testData.getClientInstance()));
-        ;
         when(utilities.validatePhoneNumber(any())).thenReturn(true);
 
         ClientPresenter clientPresenter = ClientPresenter.builder()
@@ -243,6 +298,23 @@ class ClientServiceImplTest {
 
         Assertions.assertThat(responseStatusException.getStatusCode()).isEqualTo(HttpStatus.PRECONDITION_FAILED);
         Assertions.assertThat(responseStatusException.getReason()).isEqualTo("El número de RUC o CI no es válido");
+
+        verify(clientRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldUpdateClientFailedByExistingIdNumber() {
+        when(clientRepository.findById(any())).thenReturn(Optional.of(testData.getClientInstance()));
+        when(utilities.validatePhoneNumber(any())).thenReturn(true);
+        when(utilities.validateIdNumber(any(), any())).thenReturn(true);
+        when(clientRepository.existsByIdentificationNumber(any())).thenReturn(true);
+
+        ResponseStatusException responseStatusException = org.junit.jupiter.api.Assertions.assertThrows(ResponseStatusException.class, () -> {
+            clientService.updateClient(1L, testData.getClientPresenterInstance());
+        });
+
+        Assertions.assertThat(responseStatusException.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        Assertions.assertThat(responseStatusException.getReason()).isEqualTo("Ya existe una persona con el idNumber=" + testData.getClientPresenterInstance().getIdentificationNumber());
 
         verify(clientRepository, never()).save(any());
     }

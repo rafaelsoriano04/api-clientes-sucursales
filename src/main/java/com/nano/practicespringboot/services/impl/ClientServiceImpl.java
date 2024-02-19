@@ -33,14 +33,22 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<ClientPresenter> getAll() {
-        return clientRepository.findAll().stream()
+        List<Client> clientList = clientRepository.findAll();
+        if (clientList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "No existen clientes");
+        }
+        return clientList.stream()
                 .map(this::clientToPresenter)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<ClientPresenter> getByParameters(String idNumber, String names) {
-        return clientRepository.getByParamerters(idNumber, names).stream()
+        List<Client> clientList = clientRepository.getByParameters(idNumber, names);
+        if (clientList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "No existen clientes");
+        }
+        return clientList.stream()
                 .map(this::clientToPresenter).collect(Collectors.toList());
     }
 
@@ -59,7 +67,9 @@ public class ClientServiceImpl implements ClientService {
         if (clientPresenter.getMatrix() == null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Debe ingresar una dirección matris");
         }
-        clientPresenter.getMatrix().setType(AddressType.MATRIS);
+        if (clientPresenter.getMatrix().getType().equals(AddressType.NORMAL)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Debe ingresar una dirección matris");
+        }
         return clientToPresenter(clientRepository.save(clientPresenterToClient(clientPresenter)));
     }
 
@@ -74,6 +84,10 @@ public class ClientServiceImpl implements ClientService {
         if (!utilities.validateIdNumber(request.getIdentificationType(), request.getIdentificationNumber())) {
             throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "El número de RUC o CI no es válido");
         }
+        if (clientRepository.existsByIdentificationNumber(request.getIdentificationNumber())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe una persona con el idNumber=" + request.getIdentificationNumber());
+        }
+
         client.setIdentificationType(request.getIdentificationType());
         client.setIdentificationNumber(request.getIdentificationNumber());
         client.setNames(request.getNames());
@@ -109,16 +123,10 @@ public class ClientServiceImpl implements ClientService {
 
     
     private Client clientPresenterToClient(ClientPresenter clientPresenter) {
-        Client client = modelMapper.map(clientPresenter, Client.class);
-        Address address = modelMapper.map(clientPresenter.getMatrix(), Address.class);
-        address.setClient(client);
-        client.setAddressList(List.of(address));
-        return client;
+        return modelMapper.map(clientPresenter, Client.class);
     }
 
     private AddressPresenter addressToPresenter(Address address) {
-        AddressPresenter addressPresenter = modelMapper.map(address, AddressPresenter.class);
-        addressPresenter.setClientId(address.getClient().getId());
-        return addressPresenter;
+        return modelMapper.map(address, AddressPresenter.class);
     }
 }
