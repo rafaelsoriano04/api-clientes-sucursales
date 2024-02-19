@@ -1,35 +1,28 @@
 package com.nano.practicespringboot.utilities;
 
 import com.nano.practicespringboot.enums.IdentificationType;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 @Component
 public class Utilities {
-    public void validateIdNumber(IdentificationType type, String idNumber) {
-        if (type.equals(IdentificationType.CI) || type.equals(IdentificationType.RUC)) {
-            if (type.equals(IdentificationType.RUC)) {
-                validateRuc(idNumber);
-            } else {
-                validateCi(idNumber);
-            }
-        } else {
-            throwPreconditionException("El tipo de identifición=" + type + "no es válido");
+
+    public boolean validatePhoneNumber(String phoneNumber) {
+        try {
+            Integer.parseInt(phoneNumber);
+            return phoneNumber.length() == 10;
+        } catch (Exception e) {
+            return false;
         }
     }
 
-    public void validatePhoneNumber(String phoneNumber) {
-        try {
-            Integer number = Integer.parseInt(phoneNumber);
-            if (phoneNumber.length() != 10) {
-                throwPreconditionException("El número de teléfono no es válido");
-            }
-        } catch (Exception e) {
-            throwPreconditionException("El número de teléfono no es válido");
+    public boolean validateIdNumber(IdentificationType type, String idNumber) {
+        if (type.equals(IdentificationType.RUC)) {
+            return validateRuc(idNumber);
         }
+        return validateCi(idNumber);
     }
-    private void validateCi(String ci) {
+
+    public boolean validateCi(String ci) {
         boolean validation;
         // Verificar que la cédula tenga 10 dígitos
         if (ci == null || ci.length() != 10) {
@@ -54,14 +47,11 @@ public class Utilities {
             int lastDigit = Character.getNumericValue(ci.charAt(9));
             validation = (lastDigit == verifier);
         }
-        if (!validation) {
-            throwPreconditionException("El número de cédula=" + ci + "no es válido");
-        }
+        return validation;
     }
 
-    private void validateRuc(String ruc) {
+    public boolean validateRuc(String ruc) {
         boolean validation;
-        // Verificar que la cédula tenga 10 dígitos
         if (ruc == null || ruc.length() != 13) {
             validation = false;
         } else {
@@ -95,20 +85,6 @@ public class Utilities {
                 }
             }
         }
-        if (!validation) {
-            throwPreconditionException("El ruc=" + ruc + "no es válido");
-        }
+        return validation;
     }
-
-    public void throwPreconditionException(String message) {
-        throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,
-                message);
-    }
-
-    public void throwConflictException(String message) {
-        throw new ResponseStatusException(HttpStatus.CONFLICT,
-                message);
-    }
-
-
 }
