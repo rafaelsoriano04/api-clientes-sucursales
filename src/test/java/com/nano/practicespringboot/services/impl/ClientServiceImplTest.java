@@ -59,6 +59,10 @@ class ClientServiceImplTest {
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.get(0).getMatrix().getId())
+                .isEqualTo(clientList.get(0).getAddressList().get(0).getId());
+        Assertions.assertThat(result.get(0).getMatrix().getClientId())
+                .isEqualTo(clientList.get(0).getAddressList().get(0).getClient().getId());
     }
 
     @Test
@@ -130,6 +134,10 @@ class ClientServiceImplTest {
         Assertions.assertThat(capturedClient.getId()).isEqualTo(1L);
         Assertions.assertThat(capturedClient.getNames()).isEqualTo("Rafa");
         Assertions.assertThat(capturedClient.getIdentificationNumber()).isEqualTo("1805468467");
+        Assertions.assertThat(capturedClient.getAddressList().get(0).getId())
+                .isEqualTo(clientPresenter.getMatrix().getId());
+        Assertions.assertThat(capturedClient.getAddressList().get(0).getClient().getId())
+                .isEqualTo(clientPresenter.getId());
     }
 
     @Test
@@ -335,6 +343,7 @@ class ClientServiceImplTest {
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(addressList.get(0).getId()).isEqualTo(result.get(0).getClientId());
+
     }
 
     @Test
@@ -358,7 +367,5 @@ class ClientServiceImplTest {
 
         Assertions.assertThat(responseStatusException.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         Assertions.assertThat(responseStatusException.getReason()).isEqualTo("No existe el cliente con id=" + 1L);
-
     }
-
 }

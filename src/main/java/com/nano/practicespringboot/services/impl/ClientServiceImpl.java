@@ -10,6 +10,7 @@ import com.nano.practicespringboot.services.ClientService;
 import com.nano.practicespringboot.utilities.Utilities;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     public ClientServiceImpl() {
         this.modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     }
 
     @Override
@@ -93,6 +95,7 @@ public class ClientServiceImpl implements ClientService {
         client.setNames(request.getNames());
         client.setEmail(request.getEmail());
         client.setPhoneNumber(request.getPhoneNumber());
+
         return clientToPresenter(clientRepository.save(client));
     }
 
@@ -117,16 +120,23 @@ public class ClientServiceImpl implements ClientService {
     private ClientPresenter clientToPresenter(Client client) {
         ClientPresenter clientPresenter = modelMapper.map(client, ClientPresenter.class);
         AddressPresenter addressPresenter = modelMapper.map(client.getAddressList().get(0), AddressPresenter.class);
+        addressPresenter.setClientId(clientPresenter.getId());
         clientPresenter.setMatrix(addressPresenter);
         return clientPresenter;
     }
 
     
     private Client clientPresenterToClient(ClientPresenter clientPresenter) {
-        return modelMapper.map(clientPresenter, Client.class);
+        Client client = modelMapper.map(clientPresenter, Client.class);
+        Address address = modelMapper.map(clientPresenter.getMatrix(), Address.class);
+        address.setClient(client);
+        client.setAddressList(List.of(address));
+        return client;
     }
 
     private AddressPresenter addressToPresenter(Address address) {
-        return modelMapper.map(address, AddressPresenter.class);
+        AddressPresenter addressPresenter = modelMapper.map(address, AddressPresenter.class);
+        addressPresenter.setClientId(address.getClient().getId());
+        return addressPresenter;
     }
 }
